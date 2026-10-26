@@ -3,6 +3,7 @@
 import itertools
 import random
 import time
+import math
 
 from motor import Estado, reportar, simular_al_azar
 
@@ -38,16 +39,44 @@ def jugar(estado, tiempo_restante):
     total = {j: 0.0 for j in jugadas}
     muestras = {j: 0 for j in jugadas}
     for hechas, j in enumerate(itertools.cycle(jugadas), 1):
-        # 4. Si la jugada tiene un ataque, "tiramos el dado" para elegir un resultado.
-        # AQUÍ PUEDES MEJORAR: ¿tirar el dado es la única manera de tratar el azar?
+            hechas = 0
+
+    while True:
+        # Primero probamos cada jugada al menos una vez.
+        if hechas < len(jugadas):
+            j = jugadas[hechas]
+        else:
+            # Después equilibramos exploración y explotación.
+            j = max(
+                jugadas,
+                key=lambda j: (
+                    total[j] / muestras[j]
+                    + math.sqrt(
+                        2 * math.log(hechas) / muestras[j]
+                    )
+                ),
+            )
+
+        # Muestreamos un posible resultado del combate.
         probs, hijos = zip(*estado.siguiente(j), strict=True)
         hijo = rng.choices(hijos, weights=probs)[0]
-        # 5. Medimos ese estado con partidas al azar, desde NUESTRO color.
-        # AQUÍ PUEDES MEJORAR: ¿qué tan buenas son esas partidas al azar?
-        total[j] += simular_al_azar(hijo, SIMULACIONES, rng.randrange(2**31), para=color)
+
+        # Evaluamos el estado mediante partidas aleatorias.
+        total[j] += simular_al_azar(
+            hijo,
+            SIMULACIONES,
+            rng.randrange(2**31),
+            para=color,
+        )
         muestras[j] += 1
-        # Paramos al acabar el tiempo, pero solo cuando toda jugada tiene una muestra.
-        if hechas >= len(jugadas) and time.perf_counter() >= limite:
+        hechas += 1
+
+        # Solo detenemos la búsqueda cuando todas las jugadas
+        # tienen al menos una muestra y se alcanza el límite.
+        if (
+            hechas >= len(jugadas)
+            and time.perf_counter() >= limite
+        ):
             break
 
     # 6. Elegimos la jugada con mejor promedio.
