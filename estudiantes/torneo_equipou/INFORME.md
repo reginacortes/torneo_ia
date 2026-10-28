@@ -1,7 +1,5 @@
 # Informe: montecarlo
 
-(Ejemplo de cómo llenar el informe. El tuyo debe ser más específico: números, tablas, decisiones.)
-
 ## 1. Integrantes
 Equipo del curso (participante público de referencia).
 

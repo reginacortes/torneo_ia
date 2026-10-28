@@ -1,5 +1,5 @@
-nombre = "montecarlo"
+nombre = "torneo_equipou"
 integrantes = [
-  { nombre = "Equipo del curso", clave_unica = "000000000" },
-  { nombre = "Equipo del curso", clave_unica = "000000000" },
+  { nombre = "Iker Aboitiz ", clave_unica = "000294939" },
+  { nombre = "Regina Cortes", clave_unica = "000206138" },
 ]
