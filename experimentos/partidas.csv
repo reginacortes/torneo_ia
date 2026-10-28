@@ -1,0 +1,13 @@
+﻿id_partida,sesion,grupo,blancas,negras,ganador_color,ganador_bot,motivo,puntos_blancas,puntos_negras,tiempo_blancas,tiempo_negras,numero_jugadas,semilla,pareja,juego
+MonteCarloAlazar/2026-10-28_16-25-02/001_0_0_mc_azar_vs_montecarlo.json,2026-10-28_16-25-02,MonteCarloAlazar,mc_azar,montecarlo,negras,montecarlo,puntos,0,3,0.7680060440000887,13.100898714999971,48,946478,0,0
+MonteCarloAlazar/2026-10-28_16-25-02/002_0_0_montecarlo_vs_mc_azar.json,2026-10-28_16-25-02,MonteCarloAlazar,montecarlo,mc_azar,blancas,montecarlo,puntos,3,0,12.375092882000018,0.6708354600000632,43,946478,0,0
+MonteCarloAlazar/2026-10-28_16-25-02/003_0_1_mc_azar_vs_montecarlo.json,2026-10-28_16-25-02,MonteCarloAlazar,mc_azar,montecarlo,negras,montecarlo,puntos,0,3,0.8936261280000508,14.641506880999998,58,946478,0,1
+MonteCarloAlazar/2026-10-28_16-25-02/004_0_1_montecarlo_vs_mc_azar.json,2026-10-28_16-25-02,MonteCarloAlazar,montecarlo,mc_azar,blancas,montecarlo,puntos,3,0,15.18016071599996,1.0172343780000688,61,946478,0,1
+MonteCarloHibrido/2026-10-28_16-27-33/001_0_0_mc_hibrido_vs_montecarlo.json,2026-10-28_16-27-33,MonteCarloHibrido,mc_hibrido,montecarlo,negras,montecarlo,puntos,2,3,0.7427438360001588,16.54176838299992,74,219695,0,0
+MonteCarloHibrido/2026-10-28_16-27-33/002_0_0_montecarlo_vs_mc_hibrido.json,2026-10-28_16-27-33,MonteCarloHibrido,montecarlo,mc_hibrido,blancas,montecarlo,puntos,3,1,17.45079100099997,0.8329539130003241,83,219695,0,0
+MonteCarloHibrido/2026-10-28_16-27-33/003_0_1_mc_hibrido_vs_montecarlo.json,2026-10-28_16-27-33,MonteCarloHibrido,mc_hibrido,montecarlo,negras,montecarlo,puntos,0,3,0.8435064180000609,16.959304671999917,78,219695,0,1
+MonteCarloHibrido/2026-10-28_16-27-33/004_0_1_montecarlo_vs_mc_hibrido.json,2026-10-28_16-27-33,MonteCarloHibrido,montecarlo,mc_hibrido,blancas,montecarlo,puntos,3,1,18.798064383999815,1.0092927889999714,101,219695,0,1
+MonteCarloHibrido/2026-10-28_16-34-12/001_0_0_mc_hibrido_vs_montecarlo.json,2026-10-28_16-34-12,MonteCarloHibrido,mc_hibrido,montecarlo,negras,montecarlo,puntos,1,3,0.7620190439999934,16.750657882999995,76,816458,0,0
+MonteCarloHibrido/2026-10-28_16-34-12/002_0_0_montecarlo_vs_mc_hibrido.json,2026-10-28_16-34-12,MonteCarloHibrido,montecarlo,mc_hibrido,blancas,montecarlo,puntos,3,1,18.058146966999995,0.9044951650000144,91,816458,0,0
+MonteCarloHibrido/2026-10-28_16-34-12/003_0_1_mc_hibrido_vs_montecarlo.json,2026-10-28_16-34-12,MonteCarloHibrido,mc_hibrido,montecarlo,negras,montecarlo,puntos,0,3,0.6357426619999842,15.176265881000006,62,816458,0,1
+MonteCarloHibrido/2026-10-28_16-34-12/004_0_1_montecarlo_vs_mc_hibrido.json,2026-10-28_16-34-12,MonteCarloHibrido,montecarlo,mc_hibrido,blancas,montecarlo,puntos,3,2,15.681337842999973,0.6673173729999604,65,816458,0,1
