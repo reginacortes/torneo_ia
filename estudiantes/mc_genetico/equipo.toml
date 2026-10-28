@@ -1,0 +1,6 @@
+nombre ="mc_genetico"
+integrantes = [
+  { nombre = "Iker Aboitiz ", clave_unica = "000294939" },
+  { nombre = "Regina Cortes", clave_unica = "000206138" },
+]
+
