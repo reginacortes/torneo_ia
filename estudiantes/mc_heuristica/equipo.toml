@@ -1,0 +1,5 @@
+nombre = "mc_heuristica"
+integrantes = [
+  { nombre = "Iker Aboitiz", clave_unica = "000294939" },
+  { nombre = "Regina Cortes", clave_unica = "000206138" },
+]
