@@ -1,0 +1,3 @@
+# Ignorar partidas y experiencias intermedias autogeneradas
+partidas/*.jsonl
+experiencias/*.jsonl
