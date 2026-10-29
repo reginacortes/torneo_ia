@@ -1,0 +1,6 @@
+nombre = "mc_estrategico"
+
+integrantes = [
+  { nombre = "Estratega Posicional", clave_unica = "202612001" },
+  { nombre = "Evaluador Heurístico", clave_unica = "202612002" },
+]

@@ -1,0 +1,6 @@
+nombre = "mc_ucb1"
+
+integrantes = [
+  { nombre = "Explorador UCB", clave_unica = "202611001" },
+  { nombre = "Optimizador Bandit", clave_unica = "202611002" },
+]
