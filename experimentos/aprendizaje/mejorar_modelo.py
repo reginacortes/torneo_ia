@@ -13,6 +13,7 @@ import json
 import shutil
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parents[2]
@@ -171,7 +172,7 @@ def main():
     parser.add_argument("--partidas", type=int, default=4, help="Partidas a generar")
     parser.add_argument("--partidas-eval", type=int, default=4, help="Partidas para evaluar candidato")
     parser.add_argument("--reloj", type=float, default=2.0)
-    parser.add_argument("--semilla", type=int, default=20261029)
+    parser.add_argument("--semilla", type=int, default=None, help="Semilla base (por defecto: dinámica según reloj)")
     parser.add_argument("--alpha", type=float, default=0.01)
     parser.add_argument("--gamma", type=float, default=0.98)
     parser.add_argument("--epocas", type=int, default=5)
@@ -179,12 +180,14 @@ def main():
     parser.add_argument("--umbral", type=float, default=0.50)
     args = parser.parse_args()
 
+    semilla_usada = args.semilla if args.semilla is not None else int(time.time()) % 10000000
+
     if args.modo == "completo":
         res = ejecutar_ciclo_completo(
             partidas_generar=args.partidas,
             partidas_evaluar=args.partidas_eval,
             reloj_s=args.reloj,
-            semilla=args.semilla,
+            semilla=semilla_usada,
             alpha=args.alpha,
             gamma=args.gamma,
             epocas=args.epocas,
