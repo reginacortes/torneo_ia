@@ -256,6 +256,17 @@ def jugar(estado: Estado, tiempo_restante: float):
         if all(hijo.ganador() == color for _, hijo in estado.siguiente(j)):
             return j
 
+    # 2. Anotación segura inmediata: si hay una pieza a una casilla de dar punto y hay espacio libre, tomarlo
+    meta = 9 if color == "blancas" else 1
+    anotaciones_seguras = [
+        j for j in jugadas
+        if (j.destino // 9 + 1) == meta and not estado.es_ataque(j)
+    ]
+    if anotaciones_seguras:
+        # Preferir avance recto si está libre; de lo contrario cualquier diagonal sin combate
+        rectas = [j for j in anotaciones_seguras if j.destino % 9 == j.origen % 9]
+        return rectas[0] if rectas else anotaciones_seguras[0]
+
     if disponible <= 0.0:
         return rng.choice(jugadas)
 

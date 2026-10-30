@@ -1,12 +1,12 @@
 {
-  "dif_puntos": 1.620218,
-  "dif_peones": 0.121788,
-  "avance_promedio": 0.562748,
-  "avance_maximo": 0.645076,
-  "amenaza_anotacion": 0.677052,
-  "movilidad_relativa": 0.049301,
-  "apoyo_mutuo": 0.013703,
-  "vulnerabilidad": 0.131306,
-  "bloqueo_rival": 0.05996,
-  "control_centro": 0.108021
+  "dif_puntos": 1.367725,
+  "dif_peones": 0.264027,
+  "avance_promedio": 0.593141,
+  "avance_maximo": 0.691736,
+  "amenaza_anotacion": 0.519206,
+  "movilidad_relativa": 0.055657,
+  "apoyo_mutuo": 0.097138,
+  "vulnerabilidad": 0.100802,
+  "bloqueo_rival": 0.15283,
+  "control_centro": 0.184384
 }
