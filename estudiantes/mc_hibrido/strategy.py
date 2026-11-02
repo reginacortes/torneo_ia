@@ -80,29 +80,38 @@ def valor_hoja(estado, limite):
 def valor_estado(estado, prof, limite):
     if estado.terminado() or prof <= 0 or time.perf_counter() >= limite:
         return valor_hoja(estado, limite)
+
     jugadas = candidatas(estado)
     if not jugadas:
         return valor_hoja(estado, limite)
 
     valores = []
     for j in jugadas:
-        valores.append(valor_jugada(estado, j, prof, limite))
         if time.perf_counter() >= limite:
-            break
-    if not valores:
-        return valor_hoja(estado, limite)
+            valor = sum(
+                p * evaluar(hijo)
+                for p, hijo in estado.siguiente(j)
+            )
+        else:
+            valor = valor_jugada(estado, j, prof, limite)
+
+        valores.append(valor)
+
     if estado.turno == color:
         return max(valores)
     return min(valores)
-
 
 def valor_jugada(estado, j, prof, limite):
     """Nodo de azar: ganancia esperada de la jugada."""
     total = 0.0
     for p, hijo in estado.siguiente(j):
-        total += p * valor_estado(hijo, prof - 1, limite)
         if time.perf_counter() >= limite:
-            break
+            valor = evaluar(hijo)
+        else:
+            valor = valor_estado(hijo, prof - 1, limite)
+
+        total += p * valor
+
     return total
 
 
