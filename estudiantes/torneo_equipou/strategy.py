@@ -1,6 +1,5 @@
 """Bot «montecarlo»: Monte Carlo plano. Tu punto de partida: léelo, cámbialo, mejóralo."""
 
-import itertools
 import random
 import time
 import math
@@ -38,8 +37,7 @@ def jugar(estado, tiempo_restante):
     # 3. Para cada jugada sumamos resultados (1 = gané, 0 = perdí) y contamos muestras.
     total = {j: 0.0 for j in jugadas}
     muestras = {j: 0 for j in jugadas}
-    for hechas, j in enumerate(itertools.cycle(jugadas), 1):
-            hechas = 0
+    hechas = 0
 
     while True:
         # Primero probamos cada jugada al menos una vez.

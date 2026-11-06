@@ -1,45 +1,108 @@
-# Informe: montecarlo
+# Informe técnico — torneo_equipou
 
 ## 1. Integrantes
-Equipo del curso (participante público de referencia).
 
-## 2. Idea en un párrafo
-Para cada jugada legal, jugamos muchas partidas rápidas al azar desde la posición que resulta y
-medimos qué fracción gana nuestro color. Elegimos la jugada con mejor promedio. Si una jugada
-gana la partida sin importar el dado, la tomamos de inmediato.
+- Iker Aboitiz
+- Regina Cortes
 
-## 3. Búsqueda (algoritmo y por qué)
-Monte Carlo plano: sin árbol, solo un nivel. Es lo más simple que funciona y deja claro dónde
-mejorar. Cuando la jugada tiene un ataque, tiramos el dado con la probabilidad real de cada
-resultado y medimos el estado que salió. Repartimos las muestras por turnos entre todas las
-jugadas, sin importar si parecen buenas o malas (es un desperdicio conocido).
+## 2. Descripción general
+
+`torneo_equipou` implementa una estrategia de Monte Carlo con selección adaptativa de jugadas mediante el algoritmo UCB1 (Upper Confidence Bound 1).
+
+El objetivo es elegir movimientos que maximicen la probabilidad estimada de victoria. A diferencia del Monte Carlo plano, que distribuye las simulaciones uniformemente, esta implementación utiliza los resultados obtenidos para decidir qué jugadas conviene explorar con mayor frecuencia.
+
+## 3. Algoritmo de selección de jugadas
+
+Primero se generan todas las jugadas legales del estado actual.
+
+Antes de iniciar las simulaciones, el bot comprueba si existe una jugada cuyos posibles resultados de combate conducen siempre a una victoria inmediata. Si encuentra una, la selecciona directamente.
+
+En caso contrario, comienza el proceso de búsqueda:
+
+1. Cada jugada legal recibe al menos una muestra.
+2. Se selecciona un resultado posible de la jugada utilizando las probabilidades de los ataques proporcionadas por el motor.
+3. Desde el estado resultante se ejecutan 20 partidas simuladas.
+4. Se acumula el resultado obtenido y se actualiza el número de muestras de esa jugada.
+5. Una vez exploradas todas las jugadas, se utiliza UCB1 para seleccionar las siguientes muestras.
+
+La búsqueda continúa hasta alcanzar el límite de tiempo disponible.
 
 ## 4. Función de evaluación
-Es el promedio de victorias en partidas al azar de ambos lados. Es ruidosa y optimista: el azar
-no se defiende. Siempre se mide desde nuestro color (`para=config.color`).
 
-## 5. Precomputación (qué y cómo regenerarla)
-Nada en `data/`. En `preparar` solo calentamos numba con una simulación de prueba.
+La función de evaluación se basa en la fracción de partidas ganadas por el color del bot.
 
-## 6. Manejo del reloj
-Guardamos una reserva del 30 % del reloj inicial que nunca gastamos pensando, porque cada
-jugada también cuesta tiempo de comunicación con el árbitro (unos 7 ms por jugada en nuestra
-máquina). Del resto, cada jugada usa `1/25` de lo disponible. Si solo queda la reserva, juega al
-azar al instante. El reloj se revisa después de cada muestra, pero solo cuando todas las jugadas
-tienen al menos una. Medido con el reloj de pruebas (3 s por partida): el mayor uso fue 2.55 s
-de 3 s en 50 partidas, y ninguna se perdió por reloj. Con el reloj real de 30 s no lo hemos medido.
+El motor proporciona la función `simular_al_azar`, que ejecuta partidas desde un estado determinado. Ambos jugadores seleccionan movimientos aleatoriamente y los ataques se resuelven según sus probabilidades correspondientes.
 
-## 7. Resultados vs random y montecarlo
-Con el reloj de pruebas (3 s), alternando colores: `montecarlo` ganó 36 de 40 partidas a
-`random` (90 %). En 10 partidas de `montecarlo` contra `montecarlo` ganaron las blancas 3 y las
-negras 7; son pocas partidas para decir si hay ventaja de color. No medimos resultados con el reloj de 30 s.
+El resultado se encuentra entre 0 y 1:
 
-## 8. Qué intentamos y no funcionó
-No intentamos otra cosa: este bot es solo el punto de partida. Ideas que se nos ocurrieron y no
-probamos están marcadas con `AQUÍ PUEDES MEJORAR` en `strategy.py`.
+- 1: todas las partidas simuladas fueron ganadas por nuestro color.
+- 0: ninguna partida simulada fue ganada por nuestro color.
+- Valores intermedios: proporción de victorias obtenidas.
 
-## 9. Fuentes y uso de IA
-Browne et al. (2012), «A Survey of Monte Carlo Tree Search Methods», IEEE Trans. on
-Computational Intelligence and AI in Games: describe el Monte Carlo plano como base de MCTS.
-Russell y Norvig, *Artificial Intelligence: A Modern Approach*, capítulo de juegos. Escrito por el equipo del curso con
-ayuda de IA.
+El bot acumula estos resultados para calcular el promedio de cada jugada.
+
+## 5. Selección mediante UCB1
+
+UCB1 permite equilibrar dos objetivos:
+
+- **Exploración:** probar jugadas que todavía tienen pocas muestras.
+- **Explotación:** favorecer jugadas que han obtenido buenos resultados promedio.
+
+La puntuación utilizada es:
+
+\[
+UCB1(j)=\frac{W_j}{N_j}+
+\sqrt{\frac{2\ln(T)}{N_j}}
+\]
+
+Donde:
+
+- \(W_j\): suma de los resultados de las simulaciones de la jugada.
+- \(N_j\): número de muestras de esa jugada.
+- \(T\): número total de muestras realizadas.
+
+El primer término representa el rendimiento promedio y el segundo favorece alternativas menos exploradas.
+
+Al finalizar la búsqueda, se selecciona la jugada con el mayor promedio de resultados, no necesariamente la que tenga el mayor valor UCB1.
+
+## 6. Parámetros y manejo del tiempo
+
+Los principales parámetros definidos en `strategy.py` son:
+
+| Parámetro | Valor | Función |
+|---|---:|---|
+| `SIMULACIONES` | 20 | Partidas aleatorias por muestra. |
+| `RESERVA` | 0.3 | Fracción del reloj inicial reservada. |
+| Divisor del tiempo | 25 | Determina el presupuesto de búsqueda a partir del tiempo disponible. |
+
+Durante `preparar`, se ejecuta una simulación inicial para calentar Numba y evitar que su primera compilación consuma tiempo durante la selección de movimientos.
+
+En cada turno se calcula el tiempo disponible descontando la reserva. Si ya no queda tiempo para pensar, el bot selecciona una jugada legal aleatoria.
+
+La búsqueda revisa el reloj después de cada muestra, una vez que todas las jugadas legales han sido exploradas al menos una vez.
+
+## 7. Reproducibilidad
+
+El bot inicializa un generador aleatorio con la semilla proporcionada por la configuración del torneo.
+
+Las simulaciones también reciben semillas generadas a partir de dicho generador. Esto permite que una misma configuración inicial y las mismas condiciones de ejecución produzcan resultados reproducibles.
+
+## 8. Limitaciones y trabajo futuro
+
+La estrategia presenta algunas limitaciones:
+
+- Las partidas simuladas utilizan decisiones aleatorias, por lo que no anticipan necesariamente respuestas estratégicas del oponente.
+- La calidad de las estimaciones depende del número de simulaciones realizadas.
+- El algoritmo UCB1 equilibra exploración y explotación, pero no garantiza encontrar la mejor jugada.
+- El tiempo disponible puede limitar la cantidad de muestras y afectar la precisión de las estimaciones.
+- No se ha realizado todavía una comparación experimental suficientemente amplia para afirmar que esta estrategia supera a otras implementaciones.
+
+Como trabajo futuro se propone experimentar con distintas cantidades de simulaciones, mejorar la política de selección de movimientos durante las partidas simuladas y comparar el rendimiento frente a diferentes estrategias.
+
+## 9. Fuentes y herramientas
+
+- Browne et al. (2012). *A Survey of Monte Carlo Tree Search Methods*. IEEE Transactions on Computational Intelligence and AI in Games.
+- Auer, P., Cesa-Bianchi, N. y Fischer, P. (2002). *Finite-time Analysis of the Multiarmed Bandit Problem*. Machine Learning.
+- Motor del torneo Breakthrough: funciones de generación de jugadas, resolución probabilística de ataques y simulación de partidas aleatorias.
+
+La implementación utiliza Python y las funciones proporcionadas por el motor del torneo.
