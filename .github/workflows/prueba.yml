@@ -42,7 +42,7 @@ jobs:
           for d in estudiantes/*/; do
             n="$(basename "$d")"
             case "$n" in
-              random | montecarlo | humano | tier_* | _*) continue ;;
+              random | montecarlo | humano | compartido | tier_* | _*) continue ;;
             esac
             if ! [[ "$n" =~ ^[a-z0-9_]{3,30}$ ]]; then
               msg="Se omite estudiantes/$n/: el nombre debe tener de 3 a 30 caracteres, solo minúsculas sin acentos, dígitos y guion bajo (ej.: los_alfa_beta). Renombra la carpeta."
