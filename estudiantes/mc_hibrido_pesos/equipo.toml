@@ -1,4 +1,4 @@
-nombre = "mc_hibrido"
+nombre = "mc_hibrido_pesos"
 integrantes = [
   { nombre = "Iker Aboitiz", clave_unica = "000294939" },
   { nombre = "Regina Cortes", clave_unica = "000206138" },
