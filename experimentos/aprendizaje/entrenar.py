@@ -24,16 +24,16 @@ from estudiantes.compartido.evaluacion import PESOS_DEFECTO
 
 # Límites de búsqueda física para cada peso
 LIMITES_PESOS = {
-    "dif_puntos": (0.5, 4.5),
-    "dif_peones": (0.0, 0.4),
-    "avance_promedio": (0.1, 1.2),
-    "avance_maximo": (0.05, 0.8),
-    "amenaza_anotacion": (0.1, 1.0),
-    "movilidad_relativa": (0.0, 0.4),
-    "apoyo_mutuo": (0.0, 0.4),
-    "vulnerabilidad": (0.0, 0.5),
-    "bloqueo_rival": (0.05, 0.6),
-    "control_centro": (0.0, 0.3),
+    "dif_puntos": (0.8, 4.5),
+    "dif_peones": (0.03, 0.4),
+    "avance_promedio": (0.2, 1.2),
+    "avance_maximo": (0.1, 0.8),
+    "amenaza_anotacion": (0.15, 1.0),
+    "movilidad_relativa": (0.05, 0.4),
+    "apoyo_mutuo": (0.08, 0.4),
+    "vulnerabilidad": (0.10, 0.5),
+    "bloqueo_rival": (0.15, 0.6),
+    "control_centro": (0.02, 0.3),
 }
 
 

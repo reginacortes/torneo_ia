@@ -156,12 +156,20 @@ def registrar_serie(
     archivo_destino.parent.mkdir(parents=True, exist_ok=True)
     partidas = []
 
+    # Determinar offset para no colisionar con partidas existentes
+    offset = 0
+    if archivo_destino.is_file():
+        with archivo_destino.open("r", encoding="utf-8") as f:
+            offset = sum(1 for line in f if line.strip())
+
     # Abrimos en modo append para no destruir partidas previas
     with archivo_destino.open("a", encoding="utf-8") as f:
         for i in range(cantidad_partidas):
+            num_global = offset + i
+            semilla_partida = (semilla_base + num_global * 10007) % (2**31)
             # Alternar colores: pares (botA, botB), impares (botB, botA)
             orden = equipos if i % 2 == 0 else equipos[::-1]
-            reg = jugar_y_registrar_partida(orden, reloj_s, semilla_base, i)
+            reg = jugar_y_registrar_partida(orden, reloj_s, semilla_partida, num_global)
             f.write(json.dumps(reg) + "\n")
             f.flush()
             partidas.append(reg)

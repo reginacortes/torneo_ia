@@ -1,0 +1,12 @@
+{
+  "dif_puntos": 1.506365,
+  "dif_peones": 0.060692,
+  "avance_promedio": 0.281669,
+  "avance_maximo": 0.635739,
+  "amenaza_anotacion": 0.454264,
+  "movilidad_relativa": 0.050478,
+  "apoyo_mutuo": 0.083503,
+  "vulnerabilidad": 0.100005,
+  "bloqueo_rival": 0.15,
+  "control_centro": 0.102852
+}
