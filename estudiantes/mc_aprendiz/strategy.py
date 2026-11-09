@@ -163,7 +163,7 @@ def extraer_caracteristicas(estado: Estado, perspectiva: str) -> list[float]:
 
 
 def preparar(config):
-    global color, rival, rng, reserva, parametros, vector_pesos, cache_posiciones
+    global color, rival, rng, reserva, parametros, vector_pesos, cache_heuristica
     color = config.color
     rival = "negras" if color == "blancas" else "blancas"
     rng = random.Random(config.semilla)
@@ -192,7 +192,7 @@ def preparar(config):
 
     vector_pesos = [pesos_dict[k] for k in NOMBRES_CARACTERISTICAS]
     reserva = float(parametros.get("reserva_reloj", 0.30)) * config.reloj_s
-    cache_posiciones = {}
+    cache_heuristica = {}
 
     # Calentamiento JIT de numba
     simular_al_azar(Estado.inicial(), 1, 0, para=color)
@@ -206,34 +206,34 @@ def evaluar_aprendido(estado: Estado) -> float:
     if ganador is not None:
         return 0.0
 
+    clave = estado.clave
+    if clave in cache_heuristica:
+        return cache_heuristica[clave]
+
     feats = extraer_caracteristicas(estado, color)
     score = sum(w * x for w, x in zip(vector_pesos, feats))
     # Sigmoide logística simétrica centrada
-    return 1.0 / (1.0 + math.exp(-max(-15.0, min(15.0, score))))
+    val = 1.0 / (1.0 + math.exp(-max(-15.0, min(15.0, score))))
+
+    if len(cache_heuristica) < int(parametros.get("max_cache", 10000)):
+        cache_heuristica[clave] = val
+
+    return val
 
 
 def evaluar_hoja(estado: Estado, limite: float) -> float:
-    """Combina valor aprendido con simulación Monte Carlo, usando caché Zobrist."""
+    """Combina valor aprendido (con caché rápida) con simulación Monte Carlo fresca."""
     if estado.terminado():
         return 1.0 if estado.ganador() == color else 0.0
-
-    clave = estado.clave
-    if clave in cache_posiciones:
-        return cache_posiciones[clave]
 
     heur = evaluar_aprendido(estado)
     if time.perf_counter() >= limite:
         return heur
 
-    sims = int(parametros.get("sims_por_hoja", 10))
-    peso_h = float(parametros.get("peso_heuristica", 0.40))
+    sims = int(parametros.get("sims_por_hoja", 15))
+    peso_h = float(parametros.get("peso_heuristica", 0.15))
     mc = simular_al_azar(estado, sims, rng.randrange(2**31), para=color)
-    val = peso_h * heur + (1.0 - peso_h) * mc
-
-    if len(cache_posiciones) < int(parametros.get("max_cache", 5000)):
-        cache_posiciones[clave] = val
-
-    return val
+    return peso_h * heur + (1.0 - peso_h) * mc
 
 
 def valor_esperado_jugada(estado: Estado, jugada, limite: float) -> float:
@@ -243,7 +243,6 @@ def valor_esperado_jugada(estado: Estado, jugada, limite: float) -> float:
 
 
 def jugar(estado: Estado, tiempo_restante: float):
-    global cache_posiciones
     disponible = tiempo_restante - reserva
     fraccion = float(parametros.get("fraccion_turno", 25.0))
     limite = time.perf_counter() + max(0.0, disponible) / fraccion
@@ -256,6 +255,17 @@ def jugar(estado: Estado, tiempo_restante: float):
     for j in jugadas:
         if all(hijo.ganador() == color for _, hijo in estado.siguiente(j)):
             return j
+
+    # 2. Anotación segura inmediata: si hay una pieza a una casilla de dar punto y hay espacio libre, tomarlo
+    meta = 9 if color == "blancas" else 1
+    anotaciones_seguras = [
+        j for j in jugadas
+        if (j.destino // 9 + 1) == meta and not estado.es_ataque(j)
+    ]
+    if anotaciones_seguras:
+        # Preferir avance recto si está libre; de lo contrario cualquier diagonal sin combate
+        rectas = [j for j in anotaciones_seguras if j.destino % 9 == j.origen % 9]
+        return rectas[0] if rectas else anotaciones_seguras[0]
 
     if disponible <= 0.0:
         return rng.choice(jugadas)
