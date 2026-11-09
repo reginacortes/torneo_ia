@@ -1,0 +1,47 @@
+{
+  "fecha": "2026-10-30T17:50:23.751467+00:00",
+  "algoritmo": "TD(0)",
+  "alpha": 0.005,
+  "gamma": 0.98,
+  "epocas": 10,
+  "l2_reg": 0.0001,
+  "muestras": 157776,
+  "mse_por_epoca": [
+    0.008276,
+    0.007802,
+    0.00777,
+    0.007776,
+    0.007783,
+    0.007789,
+    0.007795,
+    0.007799,
+    0.007803,
+    0.007807
+  ],
+  "mse_inicial": 0.008276,
+  "mse_final": 0.007807,
+  "pesos_iniciales": {
+    "dif_puntos": 2.107807,
+    "dif_peones": 0.0583,
+    "avance_promedio": 0.496565,
+    "avance_maximo": 0.35,
+    "amenaza_anotacion": 0.4,
+    "movilidad_relativa": 0.15,
+    "apoyo_mutuo": 0.12,
+    "vulnerabilidad": 0.18,
+    "bloqueo_rival": 0.25,
+    "control_centro": 0.08
+  },
+  "pesos_nuevos": {
+    "dif_puntos": 1.506365,
+    "dif_peones": 0.060692,
+    "avance_promedio": 0.281669,
+    "avance_maximo": 0.635739,
+    "amenaza_anotacion": 0.454264,
+    "movilidad_relativa": 0.050478,
+    "apoyo_mutuo": 0.083503,
+    "vulnerabilidad": 0.100005,
+    "bloqueo_rival": 0.15,
+    "control_centro": 0.102852
+  }
+}
